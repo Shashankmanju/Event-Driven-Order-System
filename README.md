@@ -1,36 +1,49 @@
-# Event Driven Order System
+# Architecture Documentation
 
-This is an Event Driven Order System aimed at handling real-time orders efficiently and accurately.
+## Order Creation Flow
 
-## Features
-- Asynchronous processing of orders.
-- High availability and fault tolerance.
-- Integration with various payment gateways.
+1. **Order Initiation**: The customer places an order through the frontend application.
+2. **Order Validation**: The order details are validated for completeness and correctness by the Order Service.
+3. **Payment Processing**: The Payment Service processes the payment using a third-party payment gateway.
+4. **Inventory Check**: The Inventory Service checks stock availability and reserves the ordered items.
+5. **Order Confirmation**: Upon successful payment and inventory check, an order confirmation is sent to the customer.
+6. **Shipping Preparation**: The Shipping Service prepares the items for dispatch.
+7. **Delivery Scheduling**: The Delivery Service schedules the delivery based on customer preference.
+8. **Order Completion**: The order is marked as completed in the system once delivered.
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Shashankmanju/Event-Driven-Order-System.git
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+## Microservices Ecosystem
 
-## Usage
-- Start the order processing service:
-   ```bash
-   npm start
-   ```
+- **Frontend Application**: User interface for customers.
+- **Order Service**: Handles order placement and management.
+- **Payment Service**: Manages payment processing and refunds.
+- **Inventory Service**: Tracks inventory levels and manages stock.
+- **Shipping Service**: Arranges packing and shipping of orders.
+- **Delivery Service**: Coordinates delivery logistics and schedules.
 
-## Contributing
-- For contributing, please make sure to create an issue before submitting a pull request.
+## Timelines
+- Order placement: 0-2 minutes.
+- Payment processing: 2-5 minutes (depending on payment gateway).
+- Inventory confirmation: 3-7 minutes.
+- Shipping preparation: 5-10 minutes.
+- Delivery scheduling: 10-20 minutes.
 
-## License
-This project is licensed under the MIT License.
+## Database States
+- **Initial State**: Order data is not yet created in the database.
+- **Pending State**: Order is created but awaiting payment confirmation.
+- **Confirmed State**: Payment is successful, and the order is marked confirmed.
+- **Shipped State**: Order is packed and awaiting delivery.
+- **Completed State**: Order is delivered, and the transaction is complete.
+
+## Configuration
+- Each microservice should have its own configuration settings for databases, external APIs, etc.
+- Centralized logging and monitoring should be set up across all services.
+
+## Edge Cases
+- **Payment Failure**: If payment fails, notify the customer and revert any reserved inventory.
+- **Out-of-Stock**: If items are out of stock during inventory check, notify the customer and cancel the order.
+- **Delivery Issues**: Handle cases where delivery service is delayed due to unforeseen circumstances.
+- **System Failures**: Implement retries for transient failures and alert system admins for critical failures.
 
 ---
 
-Last updated on 2026-02-21. 
-
-For further inquiries, please contact the maintainer.
+This architecture documentation outlines the complete flow of the order creation process within the microservices ecosystem, covering each step, timelines, database states, configurations, and potential edge cases.
